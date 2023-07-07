@@ -7,6 +7,8 @@ public class StaticAIDetection : MonoBehaviour
     public Transform playerTransform;
     public float turnSpeed = 5f;
     public float detectionRange = 10f;
+    public float fovAngle = 90f;
+    public float fovAngleMultiplier = 0.5f;
     public Transform returnViewDirection;
 
     private void Update()
@@ -14,11 +16,14 @@ public class StaticAIDetection : MonoBehaviour
         // Calculate the distance between AI and player
         float distanceToPlayer = Vector3.Distance(transform.position, playerTransform.position);
 
+        Vector3 directionToPlayer = playerTransform.position - transform.position;
+        float angleToPlayer = Vector3.Angle(directionToPlayer, transform.forward);
         // Check if the player is within the detection range
-        if (distanceToPlayer <= detectionRange)
+        if (distanceToPlayer <= detectionRange && angleToPlayer <= fovAngle *fovAngleMultiplier)
         {
+
             // Calculate the direction from AI to player
-            Vector3 directionToPlayer = playerTransform.position - transform.position;
+           
             directionToPlayer.y = 0f; // Optional: Set the y-component to 0 to ensure the AI turns only on the horizontal plane
 
             // Rotate the AI towards the player using Slerp for smooth rotation

@@ -13,6 +13,16 @@ public class aipart1 : MonoBehaviour
     private bool isWaiting;
     private float waitTimer;
 
+
+    public Transform playerTransform;
+    public float turnSpeed = 5f;
+    public float detectionRange = 10f;
+    public float fovAngle = 90f;
+    public float fovAngleMultiplier = 0.5f;
+
+    [SerializeField] bool isFollowing = false;
+
+
     private void Start()
     {
         agent = GetComponent<NavMeshAgent>();
@@ -26,6 +36,38 @@ public class aipart1 : MonoBehaviour
 
     private void Update()
     {
+        float distanceToPlayer = Vector3.Distance(transform.position, playerTransform.position);
+
+        Vector3 directionToPlayer = playerTransform.position - transform.position;
+        float angleToPlayer = Vector3.Angle(directionToPlayer, transform.forward);
+        // Check if the player is within the detection range
+        if (distanceToPlayer <= detectionRange && angleToPlayer <= fovAngle * fovAngleMultiplier)
+        {
+            isFollowing = true;
+            // Calculate the direction from AI to player
+
+            directionToPlayer.y = 0f; // Optional: Set the y-component to 0 to ensure the AI turns only on the horizontal plane
+
+            // Rotate the AI towards the player using Slerp for smooth rotation
+            Quaternion targetRotation = Quaternion.LookRotation(directionToPlayer);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, turnSpeed * Time.deltaTime);
+        }
+
+
+        //Makes the AI follow the player if detected and initiates chase state.
+        if (isFollowing == true)
+        {
+            agent.SetDestination(playerTransform.position);
+        }
+
+        //Repositions AI when player is out of range
+        if (distanceToPlayer > detectionRange)
+        {
+            isFollowing = false;
+        }
+
+       
+
         // Check if the AI is waiting
         if (isWaiting)
         {
@@ -45,6 +87,9 @@ public class aipart1 : MonoBehaviour
             isWaiting = true;
             waitTimer = waypointWaitTime;
         }
+
+
+
     }
 
     private void SetDestinationToNextWaypoint()

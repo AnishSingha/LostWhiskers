@@ -1,7 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+
 using UnityEngine.AI;
+using UnityEngine.Rendering;
 
 public class aipart1 : MonoBehaviour
 {
@@ -22,9 +24,16 @@ public class aipart1 : MonoBehaviour
 
     [SerializeField] bool isFollowing = false;
 
+    [SerializeField] GameObject AlertUI;
+
+    [SerializeField] float stoppingDistance = 1.5f;
 
     private void Start()
     {
+        AlertUI.SetActive(true);
+
+        
+
         agent = GetComponent<NavMeshAgent>();
         currentWaypointIndex = 0;
         isWaiting = false;
@@ -43,7 +52,9 @@ public class aipart1 : MonoBehaviour
         // Check if the player is within the detection range
         if (distanceToPlayer <= detectionRange && angleToPlayer <= fovAngle * fovAngleMultiplier)
         {
+            agent.isStopped = false;
             isFollowing = true;
+            AlertUI.SetActive(true);
             // Calculate the direction from AI to player
 
             directionToPlayer.y = 0f; // Optional: Set the y-component to 0 to ensure the AI turns only on the horizontal plane
@@ -58,12 +69,24 @@ public class aipart1 : MonoBehaviour
         if (isFollowing == true)
         {
             agent.SetDestination(playerTransform.position);
-        }
+            if (agent.remainingDistance <= stoppingDistance)
+            {
+                agent.isStopped = true;
 
+                isWaiting = true;
+                waitTimer = waypointWaitTime;
+            }
+            else
+            {
+                agent.isStopped = false;
+            }
+        }
+        
         //Repositions AI when player is out of range
         if (distanceToPlayer > detectionRange)
         {
             isFollowing = false;
+            AlertUI.SetActive(false);
         }
 
        

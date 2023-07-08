@@ -1,9 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
 using UnityEngine.AI;
-using UnityEngine.Rendering;
+
 
 public class aipart1 : MonoBehaviour
 {
@@ -15,16 +14,16 @@ public class aipart1 : MonoBehaviour
     private bool isWaiting;
     private float waitTimer;
 
-
+    //AI Detection 
     public Transform playerTransform;
     public float turnSpeed = 5f;
     public float detectionRange = 10f;
     public float fovAngle = 90f;
     public float fovAngleMultiplier = 0.5f;
 
-    [SerializeField] bool isFollowing = false;
+    [SerializeField] bool isFollowing = false; 
 
-    [SerializeField] GameObject AlertUI;
+    [SerializeField] GameObject AlertUI; //Inidication of AI chase.
 
     [SerializeField] float stoppingDistance = 1.5f;
 
@@ -49,6 +48,9 @@ public class aipart1 : MonoBehaviour
 
         Vector3 directionToPlayer = playerTransform.position - transform.position;
         float angleToPlayer = Vector3.Angle(directionToPlayer, transform.forward);
+
+
+
         // Check if the player is within the detection range
         if (distanceToPlayer <= detectionRange && angleToPlayer <= fovAngle * fovAngleMultiplier)
         {

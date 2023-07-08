@@ -2715,7 +2715,6 @@ GameObject:
   - component: {fileID: 1221395864}
   - component: {fileID: 1221395863}
   - component: {fileID: 1221395867}
-  - component: {fileID: 1221395862}
   m_Layer: 0
   m_Name: FoodSample
   m_TagString: Food
@@ -2723,22 +2722,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1221395862
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1221395861}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 61f48af0f850c844980918f2eedc0769, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maxFoodStamina: 100
-  foodStaminaIncreaseValue: 0.25
-  degenRate: 0.001
-  foodSlider: {fileID: 1119647451}
 --- !u!135 &1221395863
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -3180,7 +3163,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxFoodStamina: 100
-  foodStaminaIncreaseValue: 0
+  foodStaminaIncreaseValue: 20
+  food: {fileID: 1221395861}
   degenRate: 1
   foodSlider: {fileID: 1119647451}
 --- !u!114 &1545700560
@@ -3358,6 +3342,7 @@ MonoBehaviour:
   fovAngleMultiplier: 0.5
   isFollowing: 0
   AlertUI: {fileID: 1075980424}
+  stoppingDistance: 1
 --- !u!195 &1626289028
 NavMeshAgent:
   m_ObjectHideFlags: 0

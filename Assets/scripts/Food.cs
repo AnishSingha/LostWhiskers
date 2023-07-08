@@ -8,9 +8,9 @@ public class Food : MonoBehaviour
     public float maxFoodStamina = 100f;
     
     bool nearFood = false;
-    public float foodStaminaIncreaseValue= 0f;
+    public float foodStaminaIncreaseValue;
 
-
+    [SerializeField] GameObject food;
     
     private float currentFoodStamina;    // The current stamina value
     public float degenRate = 1f;
@@ -37,6 +37,7 @@ public class Food : MonoBehaviour
             Destroy(other.gameObject);
         }
     }
+
     private void OnTriggerExit(Collider other)
     {
         if (other.gameObject.CompareTag("Food"))
@@ -67,10 +68,10 @@ public class Food : MonoBehaviour
         else if (Input.GetKeyDown(KeyCode.T)&&nearFood == true)
         {
             
-            currentFoodStamina +=  25f;
+            currentFoodStamina += foodStaminaIncreaseValue;
             UpdateFoodUI();
             Debug.Log("T pressed");
-            //Destroy();
+            Destroy(food);
             
         }
 

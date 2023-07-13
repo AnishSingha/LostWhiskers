@@ -1,99 +1,89 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Burst.CompilerServices;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 
 
 public class aipart1 : MonoBehaviour
 {
-    public Transform[] waypoints;
-    public float waypointWaitTime = 2f;
-
-    private NavMeshAgent agent;
-    private int currentWaypointIndex;
-    private bool isWaiting;
-    private float waitTimer;
-
-    //AI Detection 
-    public Transform playerTransform;
-    public float turnSpeed = 5f;
-    public float detectionRange = 10f;
-    public float fovAngle = 90f;
-    public float fovAngleMultiplier = 0.5f;
-
-    [SerializeField] bool isFollowing = false; 
 
     [SerializeField] GameObject AlertUI; //Inidication of AI chase.
 
-    [SerializeField] float stoppingDistance = 1.5f;
+    public NavMeshAgent agent;
+    public Transform[] patrolPoints;
+    private int currentPatrolIndex;
+
+    private bool isWaiting;
+    private float waitTimer;
+    public float waypointWaitTime = 2f;
+
+
+
+    public float radius;
+    [Range(0, 360)]
+    public float angle;
+
+    public GameObject playerRef;
+
+    public LayerMask targetMask;
+    public LayerMask obstructionMask;
+
+    public bool canSeePlayer;
 
     private void Start()
     {
-        AlertUI.SetActive(true);
-
-        
-
         agent = GetComponent<NavMeshAgent>();
-        currentWaypointIndex = 0;
-        isWaiting = false;
-        waitTimer = 0f;
+        currentPatrolIndex = 0;
 
-        // Start AI navigation
-        SetDestinationToNextWaypoint();
+        playerRef = GameObject.FindGameObjectWithTag("Player");
+        StartCoroutine(FOVRoutine());
+
+
+    }
+
+    private IEnumerator FOVRoutine()
+    {
+        WaitForSeconds wait = new WaitForSeconds(0.2f);
+
+        while (true)
+        {
+            yield return wait;
+            FieldOfViewCheck();
+        }
+    }
+
+    private void FieldOfViewCheck()
+    {
+        Collider[] rangeChecks = Physics.OverlapSphere(transform.position, radius, targetMask);
+
+        if (rangeChecks.Length != 0)
+        {
+            Transform target = rangeChecks[0].transform;
+            Vector3 directionToTarget = (target.position - transform.position).normalized;
+
+            if (Vector3.Angle(transform.forward, directionToTarget) < angle / 2)
+            {
+                float distanceToTarget = Vector3.Distance(transform.position, target.position);
+
+                if (!Physics.Raycast(transform.position, directionToTarget, distanceToTarget, obstructionMask))
+                    canSeePlayer = true;
+                else
+                    canSeePlayer = false;
+
+                    
+            }
+            else
+                canSeePlayer = false;
+        }
+        else if (canSeePlayer)
+            canSeePlayer = false;
     }
 
     private void Update()
     {
-        float distanceToPlayer = Vector3.Distance(transform.position, playerTransform.position);
 
-        Vector3 directionToPlayer = playerTransform.position - transform.position;
-        float angleToPlayer = Vector3.Angle(directionToPlayer, transform.forward);
-
-
-
-        // Check if the player is within the detection range
-        if (distanceToPlayer <= detectionRange && angleToPlayer <= fovAngle * fovAngleMultiplier)
-        {
-            agent.isStopped = false;
-            isFollowing = true;
-            AlertUI.SetActive(true);
-            // Calculate the direction from AI to player
-
-            directionToPlayer.y = 0f; // Optional: Set the y-component to 0 to ensure the AI turns only on the horizontal plane
-
-            // Rotate the AI towards the player using Slerp for smooth rotation
-            Quaternion targetRotation = Quaternion.LookRotation(directionToPlayer);
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, turnSpeed * Time.deltaTime);
-        }
-
-
-        //Makes the AI follow the player if detected and initiates chase state.
-        if (isFollowing == true)
-        {
-            agent.SetDestination(playerTransform.position);
-            if (agent.remainingDistance <= stoppingDistance)
-            {
-                agent.isStopped = true;
-
-                isWaiting = true;
-                waitTimer = waypointWaitTime;
-            }
-            else
-            {
-                agent.isStopped = false;
-            }
-        }
-        
-        //Repositions AI when player is out of range
-        if (distanceToPlayer > detectionRange)
-        {
-            isFollowing = false;
-            AlertUI.SetActive(false);
-        }
-
-       
-
-        // Check if the AI is waiting
         if (isWaiting)
         {
             waitTimer -= Time.deltaTime;
@@ -104,6 +94,7 @@ public class aipart1 : MonoBehaviour
             }
             return;
         }
+    
 
         // Check if the AI has reached the current waypoint
         if (agent.remainingDistance <= agent.stoppingDistance)
@@ -113,20 +104,36 @@ public class aipart1 : MonoBehaviour
             waitTimer = waypointWaitTime;
         }
 
+        if (canSeePlayer == true)
+        {   
+            agent.SetDestination(playerRef.transform.position);
+            radius = 40f;
 
+            if (canSeePlayer == false)
+            {
+                SetDestinationToNextWaypoint();
+                
+                isWaiting = true;
+                
 
-    }
-
-    private void SetDestinationToNextWaypoint()
-    {
-        // Set the AI's destination to the next waypoint
-        agent.SetDestination(waypoints[currentWaypointIndex].position);
-
-        // Increment the waypoint index
-        currentWaypointIndex++;
-        if (currentWaypointIndex >= waypoints.Length)
+            }
+        }
+        else
         {
-            currentWaypointIndex = 0;
+            radius = 11f;
+        }
+        
+    }
+    public void SetDestinationToNextWaypoint()
+    {
+        agent.SetDestination(patrolPoints[currentPatrolIndex].position);
+
+        currentPatrolIndex++;
+        if (currentPatrolIndex >= patrolPoints.Length)
+        {
+            currentPatrolIndex = 0;
         }
     }
+
+    
 }

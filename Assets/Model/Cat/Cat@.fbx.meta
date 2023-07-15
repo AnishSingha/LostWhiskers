@@ -33,9 +33,9 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: Walk_L
-      takeName: Walk_L
-      internalID: 28909758462378905
+      name: walk
+      takeName: walk
+      internalID: -3419257869308726280
       firstFrame: 0
       lastFrame: 24
       wrapMode: 0
@@ -46,7 +46,7 @@ ModelImporter:
       hasAdditiveReferencePose: 0
       loopTime: 1
       loopBlend: 0
-      loopBlendOrientation: 1
+      loopBlendOrientation: 0
       loopBlendPositionY: 0
       loopBlendPositionXZ: 0
       keepOriginalOrientation: 0
@@ -62,38 +62,9 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 0
     - serializedVersion: 16
-      name: Walk_R
-      takeName: Walk_R
-      internalID: -3496457805999578187
-      firstFrame: 48
-      lastFrame: 72
-      wrapMode: 0
-      orientationOffsetY: 0
-      level: 0
-      cycleOffset: 0
-      loop: 0
-      hasAdditiveReferencePose: 0
-      loopTime: 1
-      loopBlend: 0
-      loopBlendOrientation: 1
-      loopBlendPositionY: 0
-      loopBlendPositionXZ: 0
-      keepOriginalOrientation: 0
-      keepOriginalPositionY: 1
-      keepOriginalPositionXZ: 0
-      heightFromFeet: 0
-      mirror: 0
-      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
-      curves: []
-      events: []
-      transformMask: []
-      maskType: 3
-      maskSource: {instanceID: 0}
-      additiveReferencePoseFrame: 48
-    - serializedVersion: 16
-      name: Turn_R
-      takeName: Turn_R
-      internalID: -317490499389676881
+      name: Walk_L
+      takeName: Walk_L
+      internalID: 28909758462378905
       firstFrame: 24
       lastFrame: 48
       wrapMode: 0
@@ -120,11 +91,11 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 24
     - serializedVersion: 16
-      name: Turn_L
-      takeName: Turn_L
-      internalID: -5069567925139958177
-      firstFrame: 72
-      lastFrame: 96
+      name: Walk_R
+      takeName: Walk_R
+      internalID: -3496457805999578187
+      firstFrame: 48
+      lastFrame: 72
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -147,7 +118,7 @@ ModelImporter:
       transformMask: []
       maskType: 3
       maskSource: {instanceID: 0}
-      additiveReferencePoseFrame: 72
+      additiveReferencePoseFrame: 48
     isReadable: 0
   meshes:
     lODScreenPercentages: []
